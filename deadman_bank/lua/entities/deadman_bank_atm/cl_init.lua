@@ -90,12 +90,14 @@ local function OpenATMMenu(playerCode)
 	Validate:SetSize(ScrW()/8, ScrH()/25)
 	Validate:SetColor(Color(0,0,255))
 	Validate.DoClick = function()
-		local value1 = tonumber(TextEntryOne:GetValue())
-		net.Start("DBank::CheckCode")
-			net.WriteInt(value1, 32)
-		net.SendToServer()
-		Main:Remove()
-		surface.PlaySound( "buttons/button15.wav" )
+		if isnumber( TextEntryOne:GetValue() ) then
+			local value1 = tonumber(TextEntryOne:GetValue())
+			net.Start("DBank::CheckCode")
+				net.WriteInt(value1, 32)
+			net.SendToServer()
+			Main:Remove()
+			surface.PlaySound( "buttons/button15.wav" )
+		end
 	end
 	Validate.Paint = function(self, w, h)
 	    draw.RoundedBox(0, 0, 0, w, h, colorHeader)
@@ -182,17 +184,19 @@ local function OpenFirstMenu()
 	Validate:SetSize(ScrW()/8, ScrH()/25)
 	Validate:SetColor(Color(0,0,255))
 	Validate.DoClick = function()
-		local value1, value2 = tonumber(TextEntryOne:GetValue()), tonumber(TextEntryTwo:GetValue())
-		if value1 == value2 then
-			net.Start("DBank::CreateCode")
-				net.WriteInt(value1, 32)
-			net.SendToServer()
-			notification.AddLegacy( DBankConfig.Language2..value1, NOTIFY_UNDO, 4  )
-			Main:Remove()
-		else
-			notification.AddLegacy( DBankConfig.Language3, NOTIFY_UNDO, 4  )
+		if isnumber( TextEntryOne:GetValue() ) and isnumber(TextEntryTwo:GetValue()) then
+			local value1, value2 = tonumber(TextEntryOne:GetValue()), tonumber(TextEntryTwo:GetValue())
+			if value1 == value2 then
+				net.Start("DBank::CreateCode")
+					net.WriteInt(value1, 32)
+				net.SendToServer()
+				notification.AddLegacy( DBankConfig.Language2..value1, NOTIFY_UNDO, 4  )
+				Main:Remove()
+			else
+				notification.AddLegacy( DBankConfig.Language3, NOTIFY_UNDO, 4  )
+			end
+			surface.PlaySound( "buttons/button15.wav" )
 		end
-		surface.PlaySound( "buttons/button15.wav" )
 	end
 	Validate.Paint = function(self, w, h)
 	    draw.RoundedBox(0, 0, 0, w, h, colorHeader)
@@ -285,14 +289,16 @@ local function OperationMenu(playerBalanceHUD, operationType)
 	Validate:SetSize(ScrW()/8, ScrH()/25)
 	Validate:SetColor(Color(0,0,255))
 	Validate.DoClick = function()
-		local value1 = tonumber(TextEntryOne:GetValue())
-		net.Start("DBank::Transaction")
-			net.WriteString(operationType)
-			net.WriteInt(value1, 32)
-		net.SendToServer()
+		if isnumber( TextEntryOne:GetValue() ) then
+			local value1 = tonumber(TextEntryOne:GetValue())
+			net.Start("DBank::Transaction")
+				net.WriteString(operationType)
+				net.WriteInt(value1, 32)
+			net.SendToServer()
 
-		Main:Remove()
-		surface.PlaySound( "buttons/button15.wav" )
+			Main:Remove()
+			surface.PlaySound( "buttons/button15.wav" )
+		end
 	end
 	Validate.Paint = function(self, w, h)
 	    draw.RoundedBox(0, 0, 0, w, h, colorHeader)

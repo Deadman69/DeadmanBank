@@ -90,14 +90,16 @@ local function OpenPanelOwner(terminalEntity)
 	Validate:SetSize(ScrW()/8, ScrH()/25)
 	Validate:SetColor(Color(0,0,255))
 	Validate.DoClick = function()
-		local value1 = tonumber(TextEntryOne:GetValue())
-		if value1 == nil or value1 == 0 then return end
-		net.Start("DBank::TerminalDefine")
-			net.WriteInt(value1, 32)
-			net.WriteEntity(terminalEntity)
-		net.SendToServer()
-		Main:Remove()
-		surface.PlaySound( "buttons/button15.wav" )
+		if isnumber( TextEntryOne:GetValue() ) then
+			local value1 = tonumber(TextEntryOne:GetValue())
+			if value1 == nil or value1 == 0 then return end
+			net.Start("DBank::TerminalDefine")
+				net.WriteInt(value1, 32)
+				net.WriteEntity(terminalEntity)
+			net.SendToServer()
+			Main:Remove()
+			surface.PlaySound( "buttons/button15.wav" )
+		end
 	end
 	Validate.Paint = function(self, w, h)
 	    draw.RoundedBox(0, 0, 0, w, h, colorHeader)
